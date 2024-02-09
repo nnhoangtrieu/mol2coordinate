@@ -197,17 +197,18 @@ class Transformer(nn.Module):
         x = self.x_embedding(x)
         y = self.y_embedding(y)
         z = self.z_embedding(z)
-        # tgt = self.tgt_embedding(tgt)
         enc_out = self.encoder(src, src_mask)
-
+        
+        # print(f'enc_out: {enc_out.shape}')
+        # print(f'src_mask: {src_mask.shape}')
+        # print(f'x: {x.shape}')
         x_out = self.xdecoder(x, enc_out, src_mask, x_mask)
         y_out = self.ydecoder(y, enc_out, src_mask, y_mask)
         z_out = self.zdecoder(z, enc_out, src_mask, z_mask)
 
         out = torch.cat((x_out, y_out, z_out), dim = -1) 
         out = self.generator(out) 
-        # out = self.decoder(tgt, enc_out, src_mask, tgt_mask)
-        # out = F.log_softmax(self.generator(out), dim = -1)d
+
 
         return out
     
