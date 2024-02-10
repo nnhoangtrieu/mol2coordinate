@@ -29,6 +29,7 @@ parser.add_argument('--patience', type=int, default=4, help='patience to stop wh
 parser.add_argument('--max_len', type=int, default=30, help='batch size')
 parser.add_argument('--save_name', type=str, default="your model name", help='batch size')
 arg = parser.parse_args()
+
 print('\n\nArgument Setting: ')
 for name, value in arg.__dict__.items() :
     print(f'\t{name}: {value}')
@@ -60,7 +61,7 @@ print(f'\nVocab: {vocab}\n')
 
 model = Transformer(arg.d_model, arg.d_ff, arg.head, arg.layer, arg.dropout, vocab).to(device)
 loss_fn = nn.L1Loss()
-optim = torch.optim.Adam(model.parameters(), lr = arg.lr)
+optim = torch.optim.Adam(model.parameters(), lr = arg.lr, weight_decay = 1e-6)
 
 
 print('\n\n')
@@ -69,10 +70,10 @@ print('======================TRAINING======================')
 print('====================================================')
 print('\n\n')
 
+patience = 0 
+best_loss = float('inf')
 
 for epoch in range(arg.epoch) : 
-    patience = 0 
-    best_loss = float('inf')
     train_loss, val_loss = 0, 0
     model.train() 
 
@@ -110,9 +111,11 @@ for epoch in range(arg.epoch) :
     else : 
         patience += 1
         if patience > arg.patience : 
-            print(f'Early Stopping at Epoch {epoch+1}')
-            print(f'Best Loss: {best_loss:.3f}')
+            print(f'\n\nEarly Stopping at Epoch {epoch+1}')
+            print(f'Best Loss: {best_loss / len(val_loader):.3f}')
             print(f'Best model checkpoint is saved at checkpoint/{arg.save_name}/{arg.save_name}.pt')
+            with open(f'checkpoint/{arg.save_name}/setting.txt', 'a') as f :
+                f.write(f'\nBest Loss: {best_loss / len(val_loader):.3f}')
             break
     
     print(f'\nEpoch {epoch+1} | Train Loss: {train_loss / len(train_loader):.3f} | Val Loss: {val_loss / len(val_loader):2f}\n')
