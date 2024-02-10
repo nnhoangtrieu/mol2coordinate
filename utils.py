@@ -16,7 +16,6 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 def visualize_molecule(xyz, smi) : 
     mol = rdkit.Chem.MolFromSmiles(smi)
-    print(mol.GetNumAtoms())
     conf = rdkit.Chem.Conformer(mol.GetNumAtoms())
     for i, coor in enumerate(xyz) : 
         conf.SetAtomPosition(i, (coor[0], coor[1], coor[2]))
@@ -41,8 +40,6 @@ def get_inference_input(smi, vocab, max_len) :
     smi = encode(smi, vocab)
     smi = pad_smi(smi, max_len)
     return torch.tensor(smi, dtype=torch.long).unsqueeze(0)
-
-
 
 
 

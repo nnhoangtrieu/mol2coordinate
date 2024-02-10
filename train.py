@@ -27,8 +27,7 @@ parser.add_argument('--epoch', type=int, default=50, help='number of epochs')
 parser.add_argument('--batch', type=int, default=64, help='batch size')
 parser.add_argument('--patience', type=int, default=4, help='patience to stop when val loss is not decreasing')
 parser.add_argument('--max_len', type=int, default=30, help='batch size')
-parser.add_argument('--save_name', type=str, default="your name", help='batch size')
-parser.add_argument('--inference', type=bool, default=False, help='batch size')
+parser.add_argument('--save_name', type=str, default="your model name", help='batch size')
 arg = parser.parse_args()
 print('\n\nArgument Setting: ')
 for name, value in arg.__dict__.items() :
@@ -52,6 +51,8 @@ if not os.path.exists(f'checkpoint/{arg.save_name}') :
 
 torch.save(vocab, f'checkpoint/{arg.save_name}/vocab.pt')
 torch.save(arg.__dict__, f'checkpoint/{arg.save_name}/setting.pt')
+with open(f'checkpoint/{arg.save_name}/setting.txt', 'w') as f :
+    f.write(str(arg.__dict__))
 
 print(f'\nNumber of data: {len(train_set)}')
 print(f'\nVocab: {vocab}\n')
