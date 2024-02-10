@@ -45,7 +45,7 @@ C=CCN=Cc1c(NCC=C)nc2n(c1=O)cccc2
 O=C(C(=O)Nc1ccccc1)Nc1ccccc1
 N#CC1=C(SC)NC(=O)CC1c1ccccc1Cl
 C=CCN/C(=N\NC(=O)Nc1ccccc1)/S
-S/C(=N/Nc1ccccc1)/Nc1ccccc1
+import matplotlib.ticker as ticker
 C=CCn1c(S)nc2c(c1=O)cccc2
 O=S(=O)(/C=C/c1ccccc1)NNc1ccccc1
 N#C/C(=C/c1cccnc1)/C(=S)N

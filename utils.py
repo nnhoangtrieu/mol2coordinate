@@ -3,28 +3,15 @@ from torch.utils.data import Dataset
 import re 
 import pickle
 import rdkit
+from rdkit.Chem import MolFromSmiles as get_mol
 import numpy as np 
 import multiprocessing
-import argparse
 import matplotlib.pyplot as plt
-import matplotlib.ticker as ticker
+import os 
+import datetime 
 
 device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-# parser = argparse.ArgumentParser(description='Description of your script.')
 
-# parser.add_argument('--d_model', type=int, default=256, help='model dimension')
-# parser.add_argument('--d_ff', type=int, default=512, help='feed forward dimension')
-# parser.add_argument('--head', type=int, default=8, help='number of attention heads')
-# parser.add_argument('--layer', type=int, default=4, help='number of layers')
-# parser.add_argument('--dropout', type=float, default=0.5, help='dropout rate')
-# parser.add_argument('--lr', type=float, default=0.0003, help='learning rate')
-# parser.add_argument('--epoch', type=int, default=100, help='number of epochs')
-# parser.add_argument('--batch', type=int, default=128, help='batch size')
-# parser.add_argument('--max_len', type=int, default=128, help='batch size')
-# parser.add_argument('--save_name', type=int, default=128, help='batch size')
-
-
-# arg = parser.parse_args()
 
 
 def visualize_molecule(xyz, smi) : 
@@ -59,15 +46,11 @@ def get_inference_input(smi, vocab, max_len) :
 
 
 
-            
-
 def parallel_f(f, input_list) :
     pool = multiprocessing.Pool()
     return pool.map(f, input_list)
 
-def parallel_f_with_args(f, input_list, args) :
-    pool = multiprocessing.Pool()
-    return pool.starmap(f, zip(input_list, args))
+
 
 def subsequent_mask( size):
     attn_shape = (1, size, size)
@@ -83,7 +66,7 @@ def get_mask(target, pad_value = -1) :
 
 
 def inference(model, smi, vocab, max_token_len, plot = False) : 
-    num_atom = rdkit.Chem.MolFromSmiles(smi).GetNumAtoms()
+    num_atom = get_mol(smi).GetNumAtoms()
     src = get_inference_input(smi, vocab, max_token_len) if type(smi) == str else smi
     model.eval()
 
